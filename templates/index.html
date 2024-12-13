@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGB Xmas Tree Control</title>
+    <script>
+        // Function to send POST requests and handle responses
+        async function sendPostRequest(url, formData) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const text = await response.text();
+                alert(text); // Show response as a pop-up alert
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Attach event listeners to forms
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', event => {
+                    event.preventDefault(); // Prevent default form submission
+                    const formData = new FormData(form);
+                    sendPostRequest(form.action, formData);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>RGB Xmas Tree Control</h1>
+
+    <!-- Form to set the color -->
+    <form action="/set_color" method="post">
+        <label for="red">Red:</label>
+        <input type="range" id="red" name="red" min="0" max="255" value="128" oninput="document.getElementById('redValue').innerText = this.value">
+        <span id="redValue">128</span><br>
+        
+        <label for="green">Green:</label>
+        <input type="range" id="green" name="green" min="0" max="255" value="128" oninput="document.getElementById('greenValue').innerText = this.value">
+        <span id="greenValue">128</span><br>
+        
+        <label for="blue">Blue:</label>
+        <input type="range" id="blue" name="blue" min="0" max="255" value="128" oninput="document.getElementById('blueValue').innerText = this.value">
+        <span id="blueValue">128</span><br>
+        
+        <label for="brightness">Brightness:</label>
+        <input type="range" id="brightness" name="brightness" min="0" max="1" step="0.01" value="0.5" oninput="document.getElementById('brightnessValue').innerText = this.value">
+        <span id="brightnessValue">0.5</span><br>
+
+        <h3>Choose Lights</h3>
+        <div>
+            <input type="checkbox" id="all" name="light" value="all" checked onclick="toggleAllLights(this)">
+            <label for="all">All Lights</label><br>
+            <div id="individualLights" style="display: none;">
+                <!-- Create checkboxes for each light -->
+                <script>
+                    for (let i = 0; i < 25; i++) {
+                        document.write(`<input type="checkbox" id="light${i}" name="light" value="${i}">`);
+                        document.write(`<label for="light${i}">Light ${i}</label><br>`);
+                    }
+                </script>
+            </div>
+        </div>
+        <button type="submit">Set Color</button>
+    </form>
+
+    <!-- Buttons to turn the tree on and off -->
+    <form action="/turn_off" method="post" style="margin-top: 20px;">
+        <button type="submit">Turn Off</button>
+    </form>
+    <form action="/turn_on" method="post" style="margin-top: 20px;">
+        <button type="submit">Turn On</button>
+    </form>
+
+    <!-- Script control buttons -->
+    <h2>Run Scripts</h2>
+    <form action="/run_script" method="post">
+        <input type="hidden" name="script" value="huecycle.py">
+        <button type="submit">Hue Cycle</button>
+    </form>
+    <form action="/run_script" method="post">
+        <input type="hidden" name="script" value="onebyone.py">
+        <button type="submit">One By One</button>
+    </form>
+    <form action="/run_script" method="post">
+        <input type="hidden" name="script" value="randomsparkles.py">
+        <button type="submit">Random Sparkles</button>
+    </form>
+    <form action="/run_script" method="post">
+        <input type="hidden" name="script" value="rgb.py">
+        <button type="submit">RGB</button>
+    </form>
+
+    <script>
+        // Toggle visibility of individual light checkboxes
+        function toggleAllLights(checkbox) {
+            const lightsDiv = document.getElementById('individualLights');
+            if (checkbox.checked) {
+                lightsDiv.style.display = 'none';
+            } else {
+                lightsDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
